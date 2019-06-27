@@ -15,7 +15,7 @@ def is_exist(file_path):
         return False
 
 
-def convert_to_audio(file_path):
+def convert_to_audio(file_path, output_path):
 
     # handle filename with whitespace
     [input_name, input_type] = os.path.splitext(file_path)
@@ -39,12 +39,14 @@ def convert_to_audio(file_path):
         input=file_path, output=output_name)
     try:
         os.system(cmd)
+        os.system('mv {source} {dest}'.format(
+            source=output_name + '.flac', dest=output_path))
     except BaseException:
         print('error: convert failed!')
         exit(1)
 
 
-def avaliable_type(file_type):
+def avaliable_type(file_path):
 
     # optional 1: common video format
     aval_type = [
@@ -68,19 +70,24 @@ def avaliable_type(file_type):
         return False
 
 
-if __name__ == "__main__":
+def main():
     file_path = sys.argv[1]
+    output_path = './output/'
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
+
     if is_exist(file_path) and avaliable_type(file_path):
-        convert_to_audio(file_path)
+        convert_to_audio(file_path, output_path)
         print('Convert Successfully!')
     else:
         print('error: ' + file_path,
               'does not exist or format is not avaliable')
+        exit(1)
     print("Upload to gcs..")
     [input_name, input_type] = os.path.splitext(file_path)
     output_name = 'audio-' + input_name + '.flac'
     upload_file = '"' + output_name + '"'
-    cmd = "gsutil cp " + upload_file + " gs://test-convert-audio"
+    cmd = "gsutil cp " + output_path + upload_file + " gs://test-convert-audio"
     try:
         os.system(cmd)
         print("Upload successfully. You can use: " + '"' +
@@ -88,3 +95,7 @@ if __name__ == "__main__":
     except BaseException:
         print('error: upload failed!')
         exit(1)
+
+
+if __name__ == "__main__":
+    main()
