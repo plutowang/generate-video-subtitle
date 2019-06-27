@@ -178,3 +178,22 @@ response = operation.result(timeout=90)
 This script add sequence number for each line and timpesamp for each line (e.g `0:00:1.012 —> 0: 00: 3.211`) and the words, which format is need by `.str` file
 
 helper modual `timestr.py` would help us convert the `start_time`or `end_time` as allowed string, `start_time`or `end_time` both are from `response` information
+
+Because the `response.result.alternatives[0].word` only contain word information, so reading output file `transcript-text.txt`, which including punctuation, and add punctuation into subtitle file or leave white space at punctuation position. 
+
+#### Note
+
+- There provide two version audio-to-text.py available 
+
+  - Subtitle with punctuation `audio-to-text-with-punctuation.py`:
+
+    - ```shell
+      python3 audio-to-text-with-punctuation.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+      ```
+
+  - Subtitle no punctuation `audio-to-text-no-punctuation.py`
+
+    - ```shell
+      python3 audio-to-text-no-punctuation.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+      ```
+
