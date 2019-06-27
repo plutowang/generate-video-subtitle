@@ -28,6 +28,7 @@ import io
 import os
 import codecs
 import timestr
+import string
 # Imports the Google Cloud client library
 from google.cloud import speech
 from google.cloud.speech import enums
@@ -93,7 +94,7 @@ def write_into_doc(source, output_path):
 
     print('Waiting for writing doc to complete...')
 
-    with codecs.open(output_path + ' transcript-text.txt', 'w',
+    with codecs.open(output_path + 'transcript-text.txt', 'w',
                      'utf-8') as writer:
         for result in source.results:
             alternative = result.alternatives[0].transcript
@@ -104,9 +105,25 @@ def write_into_subtitle(response, output_path):
 
     print('Waiting for writing subtitle to complete...')
 
-    with codecs.open(output_path + 'subtitle.srt', 'w', 'utf-8') as writer:
+    # read the chinese punctuation
+    with codecs.open(output_path + 'transcript-text.txt', 'r',
+                     'utf-8') as reader:
+        words = reader.read()
+        punc_index_list = []
+        punc_index = 0
+        for w in words:
+            if not w.isalpha() and w not in string.whitespace:
+                punc_index_list.append(punc_index)
+                punc_index += 1
+            elif w.isalpha():
+                punc_index += 1
+
+    with codecs.open(output_path + 'subtitle-no-punctuation.srt', 'w',
+                     'utf-8') as writer:
         i = 1  # setting the sequence number for srt
         init = True  # init flag
+        word_index = 0
+        curr = 0  # current punctuation number
         for result in response.results:
             alternative = result.alternatives[0]
             line = ""  # each line contain 10 words
@@ -116,6 +133,7 @@ def write_into_subtitle(response, output_path):
             start_next_para = True
             # loop the word in the result
             for word_info in alternative.words:
+                word_index += 1
                 num_woeds -= 1
                 counter += 1
                 word = word_info.word
@@ -134,6 +152,10 @@ def write_into_subtitle(response, output_path):
                     # when the num of word in this line less than
                     # 10 word, we only add this word in this line
                     line += word
+                    if word_index == (punc_index_list[curr]):
+                        curr += 1
+                        line += ' '
+                        word_index += 1
                 else:
                     # the line is enouge 10 words, we inster seq num,
                     # time and line into the srt file
@@ -145,6 +167,10 @@ def write_into_subtitle(response, output_path):
                     # and then add 1
                     i += 1
                     line += word
+                    if word_index == (punc_index_list[curr]):
+                        curr += 1
+                        line += ' '
+                        word_index += 1
                     writer.write('\n')
                     writer.write(str_start)  # write start time
                     writer.write(' --> ')
