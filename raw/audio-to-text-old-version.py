@@ -9,7 +9,7 @@ this script would generate two files: 1. text.txt--plain text for the vedio
 
 Usage:
         1. longer than 1 min pleause use gcs_uri:
-            e.g. python3 audio-to-text.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+            e.g. python3 audio-to-text.py "gs://test-convert-audio/[...].flac"
             Note: if there exits whitespace in filename, pleause use \"\"
         2. no longer than 1 min we can use local file:
             e.g. python3 audio-to-text.py audio.raw

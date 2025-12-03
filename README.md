@@ -157,7 +157,7 @@ python3 audio-to-text.py localFile.flac
 For longer audio (longer than 1 min) using asynchronous speech recognition.
 
 ```shell
-python3 audio-to-text.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+python3 audio-to-text.py "gs://test-convert-audio/[...].flac"
 ```
 
 Note: if filename with whitespace plase use `""`
@@ -186,12 +186,12 @@ Because the `response.result.alternatives[0].word` only contain word information
   - Subtitle with punctuation `audio-to-text-with-punctuation.py`:
 
     - ```shell
-      python3 audio-to-text-with-punctuation.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+      python3 audio-to-text-with-punctuation.py "gs://test-convert-audio/[...].flac"
       ```
 
   - Subtitle no punctuation `audio-to-text-no-punctuation.py`
 
     - ```shell
-      python3 audio-to-text-no-punctuation.py "gs://test-convert-audio/audio-Savvy _June Cut_final.flac"
+      python3 audio-to-text-no-punctuation.py "gs://test-convert-audio/[...].flac"
       ```
 
